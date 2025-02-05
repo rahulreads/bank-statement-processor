@@ -51,7 +51,7 @@ public class FileProcessingService {
                     continue;
                 }
 
-                String[] values = line.split(",");
+                String[] values = line.split(",(?=(?:[^\"]*\"[^\"]*\")*[^\"]*$)", -1);
                 if (values.length != 6) {
                     throw new IllegalArgumentException("Invalid CSV format");
                 }
