@@ -1,9 +1,9 @@
 package com.example.bankstatementprocessor.controller;
 
-import com.example.bankvalidator.service.FileProcessingService;
-import com.example.bankvalidator.service.ValidationService;
-import com.example.bankvalidator.model.TransactionRecord;
-import com.example.bankvalidator.model.ValidationError;
+import com.example.bankstatementprocessor.service.FileProcessingService;
+import com.example.bankstatementprocessor.service.ValidationService;
+import com.example.bankstatementprocessor.model.TransactionRecord;
+import com.example.bankstatementprocessor.model.ValidationError;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
