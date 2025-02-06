@@ -78,6 +78,10 @@ public class FileProcessingService {
             DocumentBuilder builder = factory.newDocumentBuilder();
             Document document = builder.parse(inputStream);
     
+            if (!document.getDocumentElement().getNodeName().equals("records")) {
+                throw new IllegalArgumentException("Invalid XML format");
+            }
+
             NodeList nodeList = document.getElementsByTagName("record");
     
             for (int i = 0; i < nodeList.getLength(); i++) {
@@ -99,7 +103,7 @@ public class FileProcessingService {
 
     private String getTextContent(Element element, String tagName) {
         NodeList nodeList = element.getElementsByTagName(tagName);
-        if (nodeList.getLength() > 0) {
+        if (nodeList.getLength() > 0 && nodeList.item(0).getTextContent().trim().length() > 0) {
             return nodeList.item(0).getTextContent();
         }
         throw new IllegalArgumentException("Missing field: " + tagName);
