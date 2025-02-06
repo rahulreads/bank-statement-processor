@@ -35,8 +35,10 @@ public class FileUploadController {
             List<ValidationError> errors = validationService.validateRecords(transactions);
 
             if (errors.isEmpty()) {
+                logger.info("File processed successfully: {}", file.getOriginalFilename());
                 return ResponseEntity.ok().body("{\"message\": \"All records are valid.\"}");
             } else {
+                logger.warn("Validation errors found in file: {}", file.getOriginalFilename());
                 return ResponseEntity.badRequest().body(errors);
             }
         } catch (Exception e) {
