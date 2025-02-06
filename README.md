@@ -24,7 +24,7 @@ At the end of processing, a report will be generated displaying the **transactio
 
 
 # Solution
-To solve the above problem, I have chose Java spring boot application which exposes a REST api, to which you can upload a CSV file or XML file. Currently the api only allows 1 file to be uploaded at a time. The report will be generated in JSON as the output of the POST comand. 
+To solve this problem, I have chosen a Java Spring Boot application that exposes a REST API for uploading CSV or XML files. The API currently allows only one file to be uploaded at a time. After processing, the application generates a JSON report as the response to the POST request. 
 
 The instructions to start using the app is added below. 
 
@@ -56,6 +56,12 @@ Test csv files is included in the folder 'data' in this repo
 curl -X POST -F "file=@path/to/transactions.xml" http://localhost:8080/api/v1/upload
 ```
 Test xml files is included in the folder 'data' in this repo
+
+### Sample output
+```
+curl -X POST -F "file=@records.csv" http://localhost:8080/api/v1/upload
+[{"transactionRef":"112806","errorMessage":"Duplicate reference"},{"transactionRef":"112806","errorMessage":"Duplicate reference"}]
+```
 
 ## Running Unit tests and funtional tests
 Test files are added as part of the repo. Please ensure Apache maven is installed to run these tests. 
