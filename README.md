@@ -63,10 +63,6 @@ curl -X POST -F "file=@records.csv" http://localhost:8080/api/v1/upload
 [{"transactionRef":"112806","errorMessage":"Duplicate reference"},{"transactionRef":"112806","errorMessage":"Duplicate reference"}]
 ```
 
-Here’s a brief section to add to your **README** file under error handling:
-
----
-
 ## **Error Handling**
 The application validates files and reports errors in below format
 
