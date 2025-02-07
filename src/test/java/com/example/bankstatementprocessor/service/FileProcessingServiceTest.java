@@ -4,12 +4,11 @@ import com.example.bankstatementprocessor.model.TransactionRecord;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mockito;
 import org.springframework.web.multipart.MultipartFile;
-
+import org.springframework.web.server.ResponseStatusException;
 import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.Mockito.mock;
-import org.junit.jupiter.api.Test;
 import org.springframework.mock.web.MockMultipartFile;
 import java.nio.charset.StandardCharsets;
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -24,7 +23,7 @@ class FileProcessingServiceTest {
         MultipartFile file = mock(MultipartFile.class);
         Mockito.when(file.getOriginalFilename()).thenReturn("invalid.txt");
 
-        assertThrows(IllegalArgumentException.class, () -> fileProcessingService.parseFile(file));
+        assertThrows(ResponseStatusException.class, () -> fileProcessingService.parseFile(file));
     }
 
     @Test

@@ -25,12 +25,12 @@ class FileUploadControllerIT {
 
     private final ObjectMapper objectMapper = new ObjectMapper();
 
-    //  Test for CSV file with valid transactions
+    // Test for CSV file with valid transactions
     @Test
     void testUploadCsvFile_Success() throws Exception {
         // Mock a valid CSV file
         String csvData = "Reference,AccountNumber,Description,Start Balance,Mutation,End Balance\n" +
-                         "1001,NL91RABO0315273637,Payment,100.00,-20.00,80.00\n";
+                "1001,NL91RABO0315273637,Payment,100.00,-20.00,80.00\n";
         MockMultipartFile file = new MockMultipartFile("file", "transactions.csv",
                 "text/csv", csvData.getBytes());
 
@@ -47,8 +47,8 @@ class FileUploadControllerIT {
     void testUploadCsvFile_WithErrors() throws Exception {
         // Mock a CSV file with duplicate reference
         String csvData = "Reference,AccountNumber,Description,Start Balance,Mutation,End Balance\n" +
-                         "1001,NL91RABO0315273637,Payment,100.00,-20.00,80.00\n" +
-                         "1001,NL91RABO0315273637,Duplicate,200.00,-50.00,150.00\n";
+                "1001,NL91RABO0315273637,Payment,100.00,-20.00,80.00\n" +
+                "1001,NL91RABO0315273637,Duplicate,200.00,-50.00,150.00\n";
         MockMultipartFile file = new MockMultipartFile("file", "transactions.csv",
                 "text/csv", csvData.getBytes());
 
@@ -62,21 +62,21 @@ class FileUploadControllerIT {
         assertThat(jsonResponse.get(0).get("errorMessage").asText()).isEqualTo("Duplicate reference");
     }
 
-    //  Test for XML file with valid transactions
+    // Test for XML file with valid transactions
     @Test
     void testUploadXmlFile_Success() throws Exception {
         // Mock a valid XML file
         String xmlData = """
-            <records>
-                <record reference="1001">
-                    <accountNumber>NL91RABO0315273637</accountNumber>
-                    <description>Payment</description>
-                    <startBalance>100.00</startBalance>
-                    <mutation>-20.00</mutation>
-                    <endBalance>80.00</endBalance>
-                </record>
-            </records>
-            """;
+                <records>
+                    <record reference="1001">
+                        <accountNumber>NL91RABO0315273637</accountNumber>
+                        <description>Payment</description>
+                        <startBalance>100.00</startBalance>
+                        <mutation>-20.00</mutation>
+                        <endBalance>80.00</endBalance>
+                    </record>
+                </records>
+                """;
 
         MockMultipartFile file = new MockMultipartFile("file", "transactions.xml",
                 "text/xml", xmlData.getBytes());
@@ -94,23 +94,23 @@ class FileUploadControllerIT {
     void testUploadXmlFile_WithErrors() throws Exception {
         // Mock an XML file with duplicate transaction reference
         String xmlData = """
-            <records>
-                <record reference="1001">
-                    <accountNumber>NL91RABO0315273637</accountNumber>
-                    <description>Payment</description>
-                    <startBalance>100.00</startBalance>
-                    <mutation>-20.00</mutation>
-                    <endBalance>80.00</endBalance>
-                </record>
-                <record reference="1001">
-                    <accountNumber>NL91RABO0315273637</accountNumber>
-                    <description>Duplicate</description>
-                    <startBalance>200.00</startBalance>
-                    <mutation>-50.00</mutation>
-                    <endBalance>150.00</endBalance>
-                </record>
-            </records>
-            """;
+                <records>
+                    <record reference="1001">
+                        <accountNumber>NL91RABO0315273637</accountNumber>
+                        <description>Payment</description>
+                        <startBalance>100.00</startBalance>
+                        <mutation>-20.00</mutation>
+                        <endBalance>80.00</endBalance>
+                    </record>
+                    <record reference="1001">
+                        <accountNumber>NL91RABO0315273637</accountNumber>
+                        <description>Duplicate</description>
+                        <startBalance>200.00</startBalance>
+                        <mutation>-50.00</mutation>
+                        <endBalance>150.00</endBalance>
+                    </record>
+                </records>
+                """;
 
         MockMultipartFile file = new MockMultipartFile("file", "transactions.xml",
                 "text/xml", xmlData.getBytes());
@@ -125,7 +125,6 @@ class FileUploadControllerIT {
         assertThat(jsonResponse.get(0).get("errorMessage").asText()).isEqualTo("Duplicate reference");
     }
 
-
     @Test
     void testUploadInvalidFileType() throws Exception {
         MockMultipartFile file = new MockMultipartFile("file", "transactions.txt",
@@ -134,4 +133,17 @@ class FileUploadControllerIT {
         mockMvc.perform(multipart("/api/v1/upload").file(file))
                 .andExpect(status().isInternalServerError());
     }
+
+    @Test
+    void testUploadEmptyFile() throws Exception {
+        MockMultipartFile emptyFile = new MockMultipartFile("file", "empty.csv", "text/csv", new byte[0]);
+
+        String response = mockMvc.perform(multipart("/api/v1/upload").file(emptyFile))
+                .andExpect(status().isBadRequest()) // Expect 400 Bad Request
+                .andReturn().getResponse().getContentAsString();
+
+        JsonNode jsonResponse = objectMapper.readTree(response);
+        assertThat(jsonResponse.get("error").asText()).isEqualTo("Uploaded file is empty");
+    }
+
 }

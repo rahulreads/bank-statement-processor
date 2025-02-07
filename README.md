@@ -36,7 +36,7 @@ The instructions to start using the app is added below.
 ```sh
 docker build -t bank-statement-processor .
 ```
-The app compilation step is already happeing inside the docker image
+NOTE: The Docker image includes the necessary build steps.
 
 
 ## 2 Run the Application
@@ -63,8 +63,29 @@ curl -X POST -F "file=@records.csv" http://localhost:8080/api/v1/upload
 [{"transactionRef":"112806","errorMessage":"Duplicate reference"},{"transactionRef":"112806","errorMessage":"Duplicate reference"}]
 ```
 
+Here’s a brief section to add to your **README** file under error handling:
+
+---
+
+## **Error Handling**
+The application validates files and reports errors in below format
+
+| **Scenario** | **HTTP Status** | **Error Message** |
+|-------------|--------------|----------------|
+| **Uploading an empty file** | `400 Bad Request` | `{"error": "Uploaded file is empty"}` |
+| **Unsupported file format** (not CSV or XML) | `400 Bad Request` | `{"error": "Unsupported file format"}` |
+| **Malformed XML file** | `400 Bad Request` | `{"error": "Malformed XML file"}` |
+| **Invalid CSV format** (missing fields) | `400 Bad Request` | `{"error": "Invalid CSV format"}` |
+| **Duplicate transaction reference** | `400 Bad Request` | `[{"transactionRef": "1001", "errorMessage": "Duplicate reference"}]` |
+| **End balance mismatch** | `400 Bad Request` | `[{"transactionRef": "1002", "errorMessage": "End balance mismatch"}]` |
+| **Internal Server Error** (unexpected issue) | `500 Internal Server Error` | `{"error": "File processing failed"}` |
+
+Errors are returned in **JSON format** 
+
+
+
 ## Running Unit tests and funtional tests
-Test files are added as part of the repo. Please ensure Apache maven is installed to run these tests. 
+Test files are added as part of the repo in the src/test directory. Please ensure Apache maven is installed to run these tests. 
 Run the tests using below command. 
 
 ```sh
